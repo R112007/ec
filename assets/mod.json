@@ -1,0 +1,10 @@
+{
+"name":"以太编年史",//模组名字
+"displayName":"以太编年史",//模组名字
+"author":"玖(本体)\n庄子、马克思、恩格斯、如来(指导人)\n余弟余夫(维持生命)",//模组作者
+"description":"过去于太虚，未来沉玄牝\n模组名字其实也可以是大道编年史(bushi",//模组介绍
+"version":"∃m (Module(m) ∧ Version(m, v1.0) ∧ Remastered(v1.0))",//模组版本
+"minGameVersion":"148",//模组适配游戏版本
+"main":"ec.ECMain",
+"java":true,
+}
