@@ -147,57 +147,57 @@ public class ECUnloader extends Unloader {
       Item item = null;
       boolean any = false;
 
-      if (sortItem != null) {
-        if (isPossibleItem(sortItem))
-          item = sortItem;
-      } else {
-        for (int i = 0, l = allItems.length; i < l; i++) {
-          int id = (rotations + i + 1) % l;
-          var possibleItem = allItems[id];
+      for (int j = 0; j < processCount; j++) {
+        if (sortItem != null) {
+          if (isPossibleItem(sortItem))
+            item = sortItem;
+        } else {
+          for (int i = 0, l = allItems.length; i < l; i++) {
+            int id = (rotations + i + 1) % l;
+            var possibleItem = allItems[id];
 
-          if (isPossibleItem(possibleItem)) {
-            item = possibleItem;
-            break;
-          }
-        }
-      }
-
-      if (item != null) {
-        rotations = item.id; // next rotation for nulloaders //TODO maybe if(sortItem == null)
-        var pbi = possibleBlocks.items;
-        int pbs = possibleBlocks.size;
-
-        for (int i = 0; i < pbs; i++) {
-          var pb = pbi[i];
-          var other = pb.building;
-          int maxAccepted = other.getMaximumAccepted(item);
-          pb.loadFactor = maxAccepted == 0 || other.items == null ? 0 : other.items.get(item) / (float) maxAccepted;
-          pb.lastUsed = (pb.lastUsed + 1) % Integer.MAX_VALUE; // increment the priority if not used
-        }
-
-        possibleBlocks.sort(comparator);
-
-        dumpingTo = null;
-        dumpingFrom = null;
-
-        // choose the building to accept the item
-        for (int i = 0; i < pbs; i++) {
-          if (pbi[i].canLoad && pbi[i].building != null && pbi[i].building.isValid()) {
-            dumpingTo = pbi[i];
-            break;
+            if (isPossibleItem(possibleItem)) {
+              item = possibleItem;
+              break;
+            }
           }
         }
 
-        // choose the building to take the item from
-        for (int i = pbs - 1; i >= 0; i--) {
-          if (pbi[i].canUnload && pbi[i].building != null && pbi[i].building.isValid()) {
-            dumpingFrom = pbi[i];
-            break;
-          }
-        }
+        if (item != null) {
+          rotations = item.id; // next rotation for nulloaders //TODO maybe if(sortItem == null)
+          var pbi = possibleBlocks.items;
+          int pbs = possibleBlocks.size;
 
-        // trade the items
-        for (int i = 0; i < processCount; i++) {
+          for (int i = 0; i < pbs; i++) {
+            var pb = pbi[i];
+            var other = pb.building;
+            int maxAccepted = other.getMaximumAccepted(item);
+            pb.loadFactor = maxAccepted == 0 || other.items == null ? 0 : other.items.get(item) / (float) maxAccepted;
+            pb.lastUsed = (pb.lastUsed + 1) % Integer.MAX_VALUE; // increment the priority if not used
+          }
+
+          possibleBlocks.sort(comparator);
+
+          dumpingTo = null;
+          dumpingFrom = null;
+
+          // choose the building to accept the item
+          for (int i = 0; i < pbs; i++) {
+            if (pbi[i].canLoad && pbi[i].building != null && pbi[i].building.isValid()) {
+              dumpingTo = pbi[i];
+              break;
+            }
+          }
+
+          // choose the building to take the item from
+          for (int i = pbs - 1; i >= 0; i--) {
+            if (pbi[i].canUnload && pbi[i].building != null && pbi[i].building.isValid()) {
+              dumpingFrom = pbi[i];
+              break;
+            }
+          }
+
+          // trade the items
           if (dumpingTo == null || dumpingFrom == null ||
               dumpingTo.building == null || !dumpingTo.building.isValid() ||
               dumpingFrom.building == null || !dumpingFrom.building.isValid()) {
