@@ -11,6 +11,6 @@ public class ECMain extends Mod {
 
   @Override
   public void loadContent() {
-    ECBlock.load();
+    // ECBlock.load();
   }
 }
